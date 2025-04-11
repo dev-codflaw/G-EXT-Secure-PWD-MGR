@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Secure-PWD-MGR",
+  "version": "1.0",
+  "description": "This is a very secure light weight password manager.",
+  "permissions": ["sidePanel"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icon.png"
+    }
+  },
+  "side_panel": {
+    "default_path": "popup.html"
+  },
+  "icons": {
+    "128": "icon.png"
+  }
+}
