@@ -2,6 +2,7 @@
 
 let sessionMasterKey = null;
 const passwordState = {};
+let useMasterKey = true;
 
 document.addEventListener('DOMContentLoaded', () => {
   const addBtn = document.getElementById('addBtn');
@@ -15,6 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const exportBtn = document.getElementById('exportBtn');
   const importBtn = document.getElementById('importBtn');
   const importFile = document.getElementById('importFile');
+  const toggleEncrypt = document.getElementById('toggleMasterEncryption');
+
+  if (toggleEncrypt) {
+    toggleEncrypt.addEventListener('change', (e) => {
+      useMasterKey = e.target.checked;
+      sessionMasterKey = null;
+    });
+  }
 
   addBtn.addEventListener('click', () => {
     formContainer.style.display = 'block';
@@ -38,13 +47,16 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    if (!sessionMasterKey) {
+    let encrypted;
+    if (useMasterKey) {
       const masterPassword = prompt("Enter your master password:");
-      sessionMasterKey = await window.cryptoHelper.deriveKey(masterPassword);
+      const key = await window.cryptoHelper.deriveKey(masterPassword);
+      sessionMasterKey = key;
+      encrypted = await window.cryptoHelper.encryptData(password, key);
+    } else {
+      const fallbackKey = await window.cryptoHelper.getFallbackKey();
+      encrypted = await window.cryptoHelper.encryptData(password, fallbackKey);
     }
-
-    const key = sessionMasterKey || await window.cryptoHelper.deriveKey(prompt("Enter your master password:"));
-    const encrypted = await window.cryptoHelper.encryptData(password, key);
 
     const entry = {
       id: Date.now(),
@@ -52,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
       username,
       encryptedPassword: encrypted.data,
       iv: encrypted.iv,
-      pinned: false
+      pinned: false,
+      secured: useMasterKey
     };
 
     await window.vaultDB.addEntry(entry);
@@ -120,6 +133,7 @@ function showToast(message) {
   }, 3000);
 }
 
+
 async function renderEntries() {
   const vaultList = document.getElementById('vaultList');
   vaultList.innerHTML = '';
@@ -141,7 +155,7 @@ async function renderEntries() {
 
     li.innerHTML = `
       <div class="entry-header">
-      <div class="entry"><strong>Sitename:</strong> <a href="http://${entry.site}" target="_blank" rel="noopener noreferrer">${entry.site}</a></div>
+      <div class="entry"><strong>Site:</strong> <a href="http://${entry.site}" target="_blank" rel="noopener noreferrer">${entry.site}</a></div>
       <span class="entry-actions">
         <button class="pin" title="Pin/Unpin" style="${pinStyle}; background:none; border:none;"><span class="material-icons" style="font-size:20px;">${pinIcon}</span></button>
         <button class="delete" title="Delete" style="background:none; border:none;"><span class="material-icons" style="font-size:20px;">delete</span></button>
@@ -158,14 +172,21 @@ async function renderEntries() {
     li.querySelector('.toggle').addEventListener('click', async () => {
       const pwdElem = li.querySelector(`#pwd-${entry.id}`);
       const isHidden = pwdElem.textContent === '********';
-
+    
       if (isHidden) {
-        const mp = sessionMasterKey || prompt("Enter master password:");
-        const key = sessionMasterKey || await window.cryptoHelper.deriveKey(mp);
+        let key;
+        if (entry.secured) {
+          const mp = sessionMasterKey || prompt("Enter master password:");
+          key = sessionMasterKey || await window.cryptoHelper.deriveKey(mp);
+        } else {
+          key = await window.cryptoHelper.getFallbackKey();
+        }
+    
         const decrypted = await window.cryptoHelper.decryptData({
           data: entry.encryptedPassword,
           iv: entry.iv
         }, key);
+    
         pwdElem.textContent = decrypted;
         passwordState[entry.id] = decrypted;
       } else {
@@ -173,6 +194,7 @@ async function renderEntries() {
         delete passwordState[entry.id];
       }
     });
+    
 
     li.querySelector('.pin').addEventListener('click', async () => {
       entry.pinned = !entry.pinned;
