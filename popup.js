@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const siteInput = document.getElementById('site');
   const usernameInput = document.getElementById('username');
   const passwordInput = document.getElementById('password');
-  const rememberCheck = document.getElementById('rememberMaster');
   const searchInput = document.getElementById('search');
   const exportBtn = document.getElementById('exportBtn');
   const importBtn = document.getElementById('importBtn');
@@ -26,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     siteInput.value = '';
     usernameInput.value = '';
     passwordInput.value = '';
-    rememberCheck.checked = false;
     sessionMasterKey = null;
   });
 
@@ -43,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!sessionMasterKey) {
       const masterPassword = prompt("Enter your master password:");
       sessionMasterKey = await window.cryptoHelper.deriveKey(masterPassword);
-      if (!rememberCheck.checked) sessionMasterKey = null;
     }
 
     const key = sessionMasterKey || await window.cryptoHelper.deriveKey(prompt("Enter your master password:"));
@@ -144,17 +141,17 @@ async function renderEntries() {
 
     li.innerHTML = `
       <div class="entry-header">
-        <div class="entry"><strong>Sitename:</strong> ${entry.site}</div>
-        <span class="entry-actions">
-          <button class="pin" title="Pin/Unpin" style="${pinStyle}; background:none; border:none;"><span class="material-icons" style="font-size:20px;">${pinIcon}</span></button>
-          <button class="delete" title="Delete" style="background:none; border:none;"><span class="material-icons" style="font-size:20px;">delete</span></button>
-        </span>
+      <div class="entry"><strong>Sitename:</strong> <a href="http://${entry.site}" target="_blank" rel="noopener noreferrer">${entry.site}</a></div>
+      <span class="entry-actions">
+        <button class="pin" title="Pin/Unpin" style="${pinStyle}; background:none; border:none;"><span class="material-icons" style="font-size:20px;">${pinIcon}</span></button>
+        <button class="delete" title="Delete" style="background:none; border:none;"><span class="material-icons" style="font-size:20px;">delete</span></button>
+      </span>
       </div>
       <div class="entry-email"><strong>Email:</strong> ${entry.username}</div>
       <div class="entry-password-row" style="display:flex; align-items:center; justify-content:space-between;">
-        <div class="entry-password-label"><strong>Password:</strong></div>
-        <div style="flex:1; margin: 0 6px;" class="entry-password" id="pwd-${entry.id}">********</div>
-        <button class="toggle" data-id="${entry.id}" title="Show/Hide" style="background:none; border:none;"><span class="material-icons" style="font-size:20px;">visibility</span></button>
+      <div class="entry-password-label"><strong>Password:</strong></div>
+      <div style="flex:1; margin: 0 6px;" class="entry-password" id="pwd-${entry.id}">********</div>
+      <button class="toggle" data-id="${entry.id}" title="Show/Hide" style="background:none; border:none;"><span class="material-icons" style="font-size:20px;">visibility</span></button>
       </div>
     `;
 

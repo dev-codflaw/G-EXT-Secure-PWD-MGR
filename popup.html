@@ -5,158 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      padding: 16px;
-      background: #f5f5f5;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-    #search {
-      width: 100%;
-      padding: 12px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      box-sizing: border-box;
-    }
-    #addBtn {
-      width: 100%;
-      padding: 12px;
-      font-size: 15px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 12px;
-    }
-    #form-container {
-      display: none;
-      background: #fff;
-      padding: 12px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      margin-bottom: 12px;
-      animation: fadeIn 0.3s ease-in-out;
-    }
-    #form-container input {
-      width: 100%;
-      margin: 6px 0;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-    .form-actions {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      margin-top: 12px;
-    }
-    .form-actions button {
-      flex: 1;
-      padding: 10px;
-      font-size: 14px;
-      margin: 0 4px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .save-btn { background-color: #28a745; color: white; }
-    .close-btn { background-color: #dc3545; color: white; }
-    .checkbox-wrapper {
-      margin-top: 10px;
-      font-size: 13px;
-    }
-    ul#vaultList {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      background: #fff;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      padding: 10px 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      font-size: 14px;
-    }
-    .entry-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: bold;
-      font-size: 15px;
-      margin-bottom: 6px;
-    }
-    .entry-email,
-    .entry-password-label {
-      color: #777;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-    .entry-password-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .entry-password {
-      font-size: 14px;
-      font-family: monospace;
-      color: #333;
-    }
-    .entry-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .entry-actions button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px;
-      border-radius: 4px;
-      transition: background 0.2s;
-    }
-    .entry-actions button:hover {
-      background: #f0f0f0;
-    }
-    .material-icons {
-      font-size: 20px;
-      color: #444;
-    }
-    #exportBtn, #importBtn {
-      width: 49%;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 14px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      background: #6c757d;
-      color: white;
-    }
-    #toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #333;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 14px;
-      z-index: 9999;
-      display: none;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-  </style>
 </head>
 <body>
   <input type="text" id="search" placeholder="Search...">
@@ -167,9 +15,7 @@
     <input type="text" id="site" placeholder="Site Name" required />
     <input type="text" id="username" placeholder="Username or Email" required />
     <input type="password" id="password" placeholder="Password" required />
-    <!-- <label class="checkbox-wrapper">
-      <input type="checkbox" id="rememberMaster"> Remember master password during this session
-    </label> -->
+
     <div class="form-actions">
       <button class="save-btn" id="saveBtn">Save</button>
       <button class="close-btn" id="closeBtn">Close</button>
@@ -186,7 +32,10 @@
   <input type="file" id="importFile" accept=".json" style="display:none;">
 
   <div id="toast"></div>
-
+  <div id="footer-bar">
+    Built with care | <a href="https://forms.gle/DcQxoQ4KsMAooesc6" target="_blank">Send Feedback</a>
+  </div>
+  
   <script src="crypto.js"></script>
   <script src="db.js"></script>
   <script src="popup.js"></script>
